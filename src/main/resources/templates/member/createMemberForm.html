@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>E-Commerce</h1>
+
+    <div th:if="${errorMessage}" th:attr="data-message=${errorMessage}">
+        <script th:inline="javascript">
+            alert([[${errorMessage}]]);
+        </script>
+    </div>
+
+    <form th:action="@{/member/signup}" th:object="${memberForm}" method="post">
+        <div class="form-group">
+            <label for="name">이름</label>
+            <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="이름을 입력해주세요" required>
+        </div>
+        <div class="form-group">
+            <label for="email">이메일</label>
+            <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="이메일 주소를 입력해주세요" required>
+        </div>
+        <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" minlength="8" title="비밀번호는 최소 8자 이상이어야 합니다."  th:field="*{password}" class="form-control" placeholder="비밀번호를 입력해주세요" required>
+        </div>
+        <div class="form-group">
+            <label for="password">도시</label>
+            <input type="text" id="city" th:field="*{city}" class="form-control" placeholder="행정구역을 입력해주세요" required>
+        </div>
+        <div class="form-group">
+            <label for="password">도로명</label>
+            <input type="text" id="street" th:field="*{street}" class="form-control" placeholder="도로명 주소를 입력해주세요" required>
+        </div>
+        <div class="form-group">
+            <label for="password">우편번호</label>
+            <input type="text" id="zipcode" th:field="*{zipcode}" class="form-control" placeholder="우편번호를 입력해주세요" required>
+        </div>
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-primary">회원가입</button>
+            <button type="reset" class="btn btn-secondary">취소</button>
+        </div>
+    </form>
+    <footer>
+        <p>Copyright © E-commerce 2024</p>
+    </footer>
+</div>
+</body>
+</html>

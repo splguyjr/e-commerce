@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.lang.Nullable;
 
 @Entity
@@ -27,6 +28,7 @@ public class Member {
     private Address address;
 
     @Enumerated(value = EnumType.STRING)
+    @ColumnDefault("'BASIC'")
     private Grade grade;
 
     @Builder
@@ -35,6 +37,6 @@ public class Member {
         this.email = email;
         this.password = password;
         this.address = address;
-        this.grade = grade;
+        this.grade = (grade == null) ? Grade.BASIC : grade;
     }
 }
