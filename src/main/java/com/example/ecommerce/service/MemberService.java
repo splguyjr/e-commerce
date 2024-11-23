@@ -14,6 +14,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    //회원가입
     public Long join(Member member) {
         //중복된 이메일의 회원이 있는지 검사 후 예외처리
         Optional<Member> findMember = memberRepository.findByEmail(member.getEmail());
@@ -23,6 +24,14 @@ public class MemberService {
         //해당 이메일의 회원이 없는 경우 정상적으로 저장
         Member savedMember = memberRepository.save(member);
         return savedMember.getId();
+    }
+
+    //로그인
+    public Member login(String email, String password) {
+        //주어진 이메일에 대해 저장된 비밀번호와 제공된 비밀번호가 같은지 검증, 다르면 null 반환
+        return memberRepository.findByEmail(email)
+                .filter(m -> m.getPassword().equals(password))
+                .orElse(null);
     }
 
     public Member findMember(Long id) {
