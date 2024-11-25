@@ -66,13 +66,13 @@ public class MemberController {
 
         //해당하는 이메일에 대한 비밀번호인지 확인, 아니면 null
         Member loginMember = memberService.login(email, password);
-        log.info("user : {} login successful", loginMember.getEmail());
 
         if(loginMember == null) {
             //model.addAttribute("errorMessage", "유효하지 않은 이메일, 비밀번호의 조합입니다.");
             bindingResult.reject("loginError", "유효하지 않은 이메일, 비밀번호의 조합입니다.");
             return "member/loginForm";
         }
+        log.info("user : {} login successful", loginMember.getEmail());
 
         //session 구현
         HttpSession session = request.getSession(true);//세션이 없으면 새로 생성

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>상품 목록</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="container">
+  <!-- 오류 메시지가 있을 때만 표시 -->
+  <div th:if="${errorMessage}" th:attr="data-message=${errorMessage}">
+    <script th:inline="javascript">
+      alert([[${errorMessage}]]);
+    </script>
+  </div>
+
+  <h2>등록된 상품 목록</h2>
+  <br>
+
+  <div>
+    <table class="table">
+      <thead>
+      <tr>
+        <th>상품명</th>
+        <th>가격</th>
+        <th>재고수량</th>
+        <th>상품 설명</th>
+        <th>수정</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="item : ${itemList}">
+        <td class = "product-name" td th:text="${item.name}">상품명</td>
+        <td th:text="${item.price}">가격</td>
+        <td th:text="${item.stockQuantity}">재고수량</td>
+        <td class = "product-description" th:text="${item.description}">상품 설명</td>
+        <td>
+          <a th:href="@{/item/{id} (id=${item.id})}" class="btn-primary">수정</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

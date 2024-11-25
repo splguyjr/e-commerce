@@ -7,6 +7,14 @@
 </head>
 <body>
 <div class="container">
+
+    <!-- 오류 메시지가 있을 때만 표시 -->
+    <div th:if="${errorMessage}" th:attr="data-message=${errorMessage}">
+        <script th:inline="javascript">
+            alert([[${errorMessage}]]);
+        </script>
+    </div>
+
     <h1>상품 등록</h1>
     <form th:action="@{/item/register}" th:object="${itemForm}" method="post" enctype="multipart/form-data">
         <div class="form-group">

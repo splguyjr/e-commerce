@@ -2,6 +2,7 @@ package com.example.ecommerce.controller;
 
 
 import com.example.ecommerce.dto.ItemForm;
+import com.example.ecommerce.entity.Item;
 import com.example.ecommerce.service.ItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,12 +11,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -40,11 +39,18 @@ public class ItemController {
             return "item/itemRegisterForm";
         }
 
-        itemService.registerItem(itemForm);
+        Long itemId = itemService.registerItem(itemForm);
+        Item item = itemService.findItem(itemId);
+        log.info("user : {} item registration successful", item.getName());
 
         return "redirect:/userHome";
     }
 
-
+    @GetMapping("")
+    public String getItemList(Model model) {
+        List<Item> itemList = itemService.findItems();
+        model.addAttribute("itemList", itemList);
+        return "item/itemList";
+    }
 
 }

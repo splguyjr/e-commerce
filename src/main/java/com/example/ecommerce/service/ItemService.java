@@ -6,12 +6,15 @@ import com.example.ecommerce.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -49,4 +52,17 @@ public class ItemService {
             throw new RuntimeException("파일 저장 실패", e);
         }
     }
+
+    @Transactional(readOnly = true)
+    public Item findItem(Long id) {
+        Optional<Item> item = itemRepository.findById(id);
+        return item.orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Item> findItems() {
+        return itemRepository.findAll();
+    }
+
+
 }
