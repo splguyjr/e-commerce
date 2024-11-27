@@ -43,7 +43,7 @@ public class ItemController {
         Item item = itemService.findItem(itemId);
         log.info("user : {} item registration successful", item.getName());
 
-        return "redirect:/userHome";
+        return "redirect:/";
     }
 
     @GetMapping("")
@@ -52,5 +52,4 @@ public class ItemController {
         model.addAttribute("itemList", itemList);
         return "item/itemList";
     }
-
 }

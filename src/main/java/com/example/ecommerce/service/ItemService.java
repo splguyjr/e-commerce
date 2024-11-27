@@ -3,6 +3,7 @@ package com.example.ecommerce.service;
 import com.example.ecommerce.dto.ItemForm;
 import com.example.ecommerce.entity.Item;
 import com.example.ecommerce.repository.ItemRepository;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
+    @Getter
     @Value("${file.upload-dir}")
     private String uploadDir;
 
@@ -35,6 +37,7 @@ public class ItemService {
             String savedFilename = UUID.randomUUID() + fileExtension;
 
             Path filePath = Paths.get(uploadDir, savedFilename);
+            System.out.println(filePath);
 
             Files.createDirectories(filePath.getParent());
             image.transferTo(filePath.toFile());
@@ -43,7 +46,7 @@ public class ItemService {
                     itemForm.getPrice(),
                     itemForm.getStockQuantity(),
                     itemForm.getDescription(),
-                    filePath.toString()
+                    savedFilename
             );
 
             itemRepository.save(item);
@@ -63,6 +66,5 @@ public class ItemService {
     public List<Item> findItems() {
         return itemRepository.findAll();
     }
-
 
 }
