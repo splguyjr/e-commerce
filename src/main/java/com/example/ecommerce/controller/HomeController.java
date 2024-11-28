@@ -52,7 +52,6 @@ public class HomeController {
     public Resource getImage(@PathVariable String filename) throws MalformedURLException {
         // 파일 저장 경로
         String uploadDir = itemService.getUploadDir();
-        System.out.println(uploadDir);
 
         // 파일 경로 생성
         Path filePath = Paths.get(uploadDir).resolve(filename);
