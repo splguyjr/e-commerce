@@ -1,5 +1,6 @@
 package com.example.ecommerce.controller;
 
+import com.example.ecommerce.dto.CartDeleteForm;
 import com.example.ecommerce.dto.CartForm;
 import com.example.ecommerce.dto.CartItemForm;
 import com.example.ecommerce.entity.CartItem;
@@ -13,10 +14,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,6 +36,7 @@ public class CartController {
 
 
     @PostMapping("/add")
+    @ResponseBody
     public ResponseEntity<String> addItem(@ModelAttribute("cartForm") CartForm cartForm, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
@@ -50,6 +49,18 @@ public class CartController {
         Member member = (Member)session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         cartService.addCart(member.getId(), cartForm.getItemId(), cartForm.getCount());
+        return ResponseEntity.ok("success");
+    }
+
+    @DeleteMapping("/delete")
+    @ResponseBody
+    public ResponseEntity<String> deleteItem(@RequestBody CartDeleteForm cartDeleteForm) {
+        System.out.println(cartDeleteForm.getCartItemId());
+        if (cartService.findCartItem(cartDeleteForm.getCartItemId()) == null) {
+            return new ResponseEntity<String>("잘못된 요청입니다.", HttpStatus.NOT_FOUND);
+        }
+
+        cartService.deleteCartItem(cartDeleteForm.getCartItemId());
         return ResponseEntity.ok("success");
     }
 

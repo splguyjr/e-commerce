@@ -69,4 +69,18 @@ public class CartService {
 
         return cartItemForms;
     }
+
+    @Transactional(readOnly = true)
+    public CartItem findCartItem(Long cartItemId) {
+        return cartItemRepository.findById(cartItemId).orElse(null);
+    }
+
+    public void deleteCartItem(Long cartItemId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId).orElse(null);
+
+        if (cartItem != null) {
+            cartItemRepository.delete(cartItem);
+        }
+    }
+
 }

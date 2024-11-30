@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class CartItemForm {
-    //필요한 것:아이템 이름, 아이템 가격, 아이템 수량,아이템id,imageUrl
+    //필요한 것:아이템 이름, 아이템 가격, 아이템 수량, 아이템id, imageUrl
 
     private Long cartItemId;
 

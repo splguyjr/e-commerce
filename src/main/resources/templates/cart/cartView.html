@@ -59,14 +59,14 @@
   <!-- 장바구니 상품 삭제 -->
   function deleteCartItem(itemId) {
 
-    var cartItemForm = {
+    var cartDeleteForm = {
       cartItemId : itemId
     };
 
     $.ajax({
-      url: "/cart",
+      url: "/cart/delete",
       type: 'DELETE',
-      data: JSON.stringify(cartItemForm),
+      data: JSON.stringify(cartDeleteForm),
       contentType: 'application/json',
 
       <!-- 성공시 -->
