@@ -32,4 +32,9 @@ public class CartItem {
         this.cart = cart;
         this.item = item;
     }
+
+    public void changeCount(int count) {
+        this.count = count;
+    }
+
 }
