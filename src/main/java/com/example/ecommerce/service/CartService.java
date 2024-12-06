@@ -1,14 +1,9 @@
 package com.example.ecommerce.service;
 
 import com.example.ecommerce.dto.CartItemForm;
-import com.example.ecommerce.entity.Cart;
-import com.example.ecommerce.entity.CartItem;
-import com.example.ecommerce.entity.Item;
-import com.example.ecommerce.entity.Member;
-import com.example.ecommerce.repository.CartItemRepository;
-import com.example.ecommerce.repository.CartRepository;
-import com.example.ecommerce.repository.ItemRepository;
-import com.example.ecommerce.repository.MemberRepository;
+import com.example.ecommerce.dto.WrappingMaterialListForm;
+import com.example.ecommerce.entity.*;
+import com.example.ecommerce.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +23,7 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ItemRepository itemRepository;
     private final CartItemRepository cartItemRepository;
+    private final WrappingMaterialInfoRepository wrappingMaterialInfoRepository;
 
     public Long addCart(Long memberId, Long itemId, int count) {
         Member member = memberRepository.findById(memberId).get();
@@ -81,6 +77,20 @@ public class CartService {
         if (cartItem != null) {
             cartItemRepository.delete(cartItem);
         }
+    }
+
+    public WrappingMaterialListForm getWrappingMaterialList() {
+        List<WrappingMaterialInfo> wrappingMaterialInfoList = wrappingMaterialInfoRepository.findAll();
+
+        List<WrappingMaterialListForm.WrappingMaterial> wrappingMaterialList = wrappingMaterialInfoList.stream()
+                .map(WrappingMaterialListForm::from)
+                .collect(Collectors.toList());
+
+        WrappingMaterialListForm wrappingMaterialListForm = WrappingMaterialListForm.builder()
+                .wrappingMaterialList(wrappingMaterialList)
+                .build();
+
+        return wrappingMaterialListForm;
     }
 
 }

@@ -115,18 +115,30 @@
       var id = $(this).val();
       var count = $("#count_" + id).val();
 
+      // 포장 옵션 값 가져오기
+      var wrapOption1 = $('#wrapOption1_' + id).val();
+      var wrapOption2 = $('#wrapOption2_'  + id).val();
+      var wrapOption3 = $('#wrapOption3_'  + id).val();
+
+      // wrappingMaterialList 생성
+      var wrappingMaterialList = new Array();
+      if (wrapOption1 !== 'none') wrappingMaterialList.push(parseInt(wrapOption1));
+      if (wrapOption2 !== 'none') wrappingMaterialList.push(parseInt(wrapOption2));
+      if (wrapOption3 !== 'none') wrappingMaterialList.push(parseInt(wrapOption3));
+
       var obj = new Object();
       obj.itemId = id;
       obj.count = count;
+      obj.wrappingMaterialList = wrappingMaterialList;
 
       list.push(obj);
     })
 
     var dataDto = new Object();
-    dataDto.cartOrderDtoList = list;
+    dataDto.orderList = list;
 
     $.ajax({
-      url: "/order",
+      url: "/orders",
       type: 'POST',
       data: JSON.stringify(dataDto),
       contentType: 'application/json',
@@ -209,6 +221,30 @@
                   <i class="fas fa-trash fa-lg"></i>
                 </button>
               </div>
+              <div class="col-md-3 col-lg-2 col-xl-2">
+                <select th:id="'wrapOption1_' + ${cartItem.cartItemId}" class="form-select">
+                  <option value="none">없음</option>
+                  <option th:each="material : ${wrappingMaterialListForm}"
+                          th:value="${material.materialId}"
+                          th:text="${material.materialName}">종이</option>
+                </select>
+
+                <select th:id="'wrapOption2_' + ${cartItem.cartItemId}" class="form-select">
+                  <option value="none">없음</option>
+                  <option th:each="material : ${wrappingMaterialListForm}"
+                          th:value="${material.materialId}"
+                          th:text="${material.materialName}">종이</option>
+                </select>
+
+                <select th:id="'wrapOption3_' + ${cartItem.cartItemId}" class="form-select">
+                  <option value="none">없음</option>
+                  <option th:each="material : ${wrappingMaterialListForm}"
+                          th:value="${material.materialId}"
+                          th:text="${material.materialName}">종이</option>
+                </select>
+
+              </div>
+
             </div>
           </div>
         </div>

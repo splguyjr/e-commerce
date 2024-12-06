@@ -3,6 +3,7 @@ package com.example.ecommerce.controller;
 import com.example.ecommerce.dto.CartDeleteForm;
 import com.example.ecommerce.dto.CartForm;
 import com.example.ecommerce.dto.CartItemForm;
+import com.example.ecommerce.dto.WrappingMaterialListForm;
 import com.example.ecommerce.entity.CartItem;
 import com.example.ecommerce.entity.Member;
 import com.example.ecommerce.service.CartService;
@@ -10,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,6 +30,8 @@ public class CartController {
         List<CartItemForm> cartItems = cartService.findCartItems(member.getId());
         model.addAttribute("cartItemListForm", cartItems);
 
+        WrappingMaterialListForm wrappingMaterials = cartService.getWrappingMaterialList();
+        model.addAttribute("wrappingMaterialListForm", wrappingMaterials.getWrappingMaterialList());
         return "cart/cartView";
     }
 

@@ -25,4 +25,14 @@ public class WrappingItem {
 
     @Column(name = "layer_level")
     private int layerLevel;
+
+    private WrappingItem(OrderItem orderItem, WrappingMaterialInfo wrappingMaterialInfo, int layerLevel) {
+        this.orderItem = orderItem;
+        this.wrappingMaterialInfo = wrappingMaterialInfo;
+        this.layerLevel = layerLevel;
+    }
+
+    public static WrappingItem createWrappingItem(OrderItem orderItem, WrappingMaterialInfo wrappingMaterialInfo, int layerLevel) {
+        return new WrappingItem(orderItem,wrappingMaterialInfo, layerLevel);
+    }
 }

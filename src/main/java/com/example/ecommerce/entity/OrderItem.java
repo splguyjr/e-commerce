@@ -38,7 +38,6 @@ public class OrderItem {
     @Column(name = "wrapping_option")
     private Boolean wrappingOption;//포장 여부
 
-    @Builder
     private OrderItem(Item item, int count, int itemsPrice) {
         this.item = item;
         this.count = count;
