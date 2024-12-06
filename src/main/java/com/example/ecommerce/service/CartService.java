@@ -16,11 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Transactional
 @RequiredArgsConstructor
 public class CartService {
 
@@ -54,7 +54,7 @@ public class CartService {
             return savedCartItem.getId();
         }
 
-        //장바구니에 상품이 존재하는 경우
+        //장바구니에 상품이 존재하는 경우, JPA의 변경 감지로 count값 update
         cartItem.changeCount(count);
         return cartItem.getId();
     }
