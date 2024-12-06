@@ -64,7 +64,7 @@ public class CartController {
         return ResponseEntity.ok("success");
     }
 
-    private Member getMember(HttpServletRequest request) {
+    public static Member getMember(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {

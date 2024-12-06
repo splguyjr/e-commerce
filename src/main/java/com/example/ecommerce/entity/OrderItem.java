@@ -39,6 +39,13 @@ public class OrderItem {
     private Boolean wrappingOption;//포장 여부
 
     @Builder
+    private OrderItem(Item item, int count, int itemsPrice) {
+        this.item = item;
+        this.count = count;
+        this.itemsPrice = itemsPrice;
+    }
+
+    @Builder
     private OrderItem(Item item, int count, int itemsPrice, Boolean wrappingOption) {
         this.item = item;
         this.count = count;
@@ -50,8 +57,9 @@ public class OrderItem {
         this.order = order;
     }
 
-    public static OrderItem createOrderItem(Item item, int count, int itemsPrice, Boolean wrappingOption) {
-        return new OrderItem(item, count, itemsPrice, wrappingOption);
+    public static OrderItem createSingleOrderItem(Item item, int count, int itemsPrice) {
+        item.updateStock(count);
+        return new OrderItem(item, count, itemsPrice);
     }
 
 }
