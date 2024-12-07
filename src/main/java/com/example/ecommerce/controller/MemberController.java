@@ -2,18 +2,24 @@ package com.example.ecommerce.controller;
 
 import com.example.ecommerce.dto.LoginForm;
 import com.example.ecommerce.dto.MemberForm;
+import com.example.ecommerce.dto.MyPageForm;
 import com.example.ecommerce.entity.Address;
 import com.example.ecommerce.entity.Member;
 import com.example.ecommerce.service.MemberService;
+import com.example.ecommerce.service.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -22,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+    private final OrderService orderService;
 
     @GetMapping("/signup")
     private String createMemberForm(@ModelAttribute("memberForm") MemberForm memberForm, Model model) {
@@ -88,5 +95,16 @@ public class MemberController {
             session.invalidate();
         }
         return "redirect:/";
+    }
+
+
+    @GetMapping("/mypage")
+    public String myPage(HttpServletRequest request, Model model) {
+        Member member = CartController.getMember(request);
+        List<MyPageForm> myPageInfo = orderService.getMyPageInfo(member.getId());
+
+        model.addAttribute("myPageInfo", myPageInfo);
+
+        return "member/myPage";
     }
 }

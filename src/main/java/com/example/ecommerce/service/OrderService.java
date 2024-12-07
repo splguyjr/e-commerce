@@ -1,6 +1,7 @@
 package com.example.ecommerce.service;
 
 import com.example.ecommerce.dto.CartOrderForm;
+import com.example.ecommerce.dto.MyPageForm;
 import com.example.ecommerce.entity.*;
 import com.example.ecommerce.exception.NotEnoughStockException;
 import com.example.ecommerce.repository.*;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -103,4 +105,70 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
         return savedOrder.getId();
     }
+
+
+//    public record OrderInfo(String itemName, String imageUrl, int itemCount, int itemPrice, int totalPrice) {}
+//    public record MyPageInfo(MyPageForm.OrderInfo orderInfo, LocalDateTime orderDate, OrderStatus orderStatus) {}
+//    private List<MyPageForm.MyPageInfo> myPageInfoList;
+public List<MyPageForm> getMyPageInfo(Long memberId) {
+    Member member = memberRepository.findById(memberId).orElse(null);
+    List<Order> orderList = orderRepository.findByMemberId(member.getId());
+
+    List<MyPageForm> myPageFormList = new ArrayList<>();
+
+    for (Order order : orderList) {
+        LocalDateTime orderDate = order.getOrderDate(); // 주문일자
+        OrderStatus orderStatus = order.getOrderStatus(); // 배송상황
+        List<OrderItem> orderItems = order.getOrderItems(); // 주문 아이템들
+
+        int totalPrice = 0;
+        List<MyPageForm.MyPageInfo> myPageInfos = new ArrayList<>();
+
+        // OrderItem마다 OrderInfo만 생성하고, 나머지 정보는 for문 밖에서 처리
+        for (OrderItem orderItem : orderItems) {
+            Item item = orderItem.getItem();
+            String itemName = item.getName(); // 아이템 이름
+            String imageUrl = item.getImageUrl(); // 아이템 이미지
+            int itemCount = orderItem.getCount(); // 아이템 주문 수량
+            int itemsPrice = orderItem.getItemsPrice(); // 아이템별 총 가격
+            totalPrice += itemsPrice; // 주문 총 가격
+
+            MyPageForm.OrderInfo orderInfo = MyPageForm.OrderInfo.builder()
+                    .itemName(itemName)
+                    .imageUrl(imageUrl)
+                    .itemCount(itemCount)
+                    .itemPrice(itemsPrice)
+                    .build();
+
+            // OrderInfo만 생성
+            MyPageForm.MyPageInfo myPageInfo = MyPageForm.MyPageInfo.builder()
+                    .orderInfo(orderInfo)
+                    .build();
+
+            myPageInfos.add(myPageInfo);
+        }
+
+        // for문 밖에서 orderStatus, orderDate, totalPrice 설정
+        for (int i = 0; i < myPageInfos.size(); i++) {
+            MyPageForm.MyPageInfo myPageInfo = myPageInfos.get(i);
+            // orderStatus, orderDate, totalPrice 설정
+            myPageInfos.set(i, myPageInfo.toBuilder()
+                    .orderStatus(orderStatus)
+                    .orderDate(orderDate)
+                    .totalPrice(totalPrice)
+                    .build());
+        }
+
+        // 최종적으로 MyPageForm을 추가
+        MyPageForm myPageForm = MyPageForm.builder()
+                .myPageInfoList(myPageInfos)
+                .build();
+
+        myPageFormList.add(myPageForm);
+    }
+
+    return myPageFormList;
+}
+
+
 }

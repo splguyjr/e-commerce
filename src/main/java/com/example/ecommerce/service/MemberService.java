@@ -1,5 +1,6 @@
 package com.example.ecommerce.service;
 
+import com.example.ecommerce.dto.MyPageForm;
 import com.example.ecommerce.entity.Member;
 import com.example.ecommerce.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,4 +47,5 @@ public class MemberService {
     public List<Member> findMembers() {
         return memberRepository.findAll();
     }
+
 }
