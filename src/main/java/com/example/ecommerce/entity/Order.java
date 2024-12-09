@@ -1,5 +1,7 @@
 package com.example.ecommerce.entity;
 
+import com.example.ecommerce.service.orderstate.OrderState;
+import com.example.ecommerce.service.orderstate.PreparationState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -32,10 +34,30 @@ public class Order {
 
     private LocalDateTime orderDate;
 
+    @Transient//JPA 매핑 대상 제외
+    private OrderState orderState;
+
     private Order(Member member) {
         this.member = member;
         this.orderStatus = OrderStatus.Preparation;//초기 발송상태는 항상 입고 준비중
         this.orderDate = LocalDateTime.now();
+        this.orderState = new PreparationState();
+    }
+
+    public void setOrderState(OrderState orderState) {
+        this.orderState = orderState;
+    }
+
+    public void proceed() {
+        this.orderState.proceed(this);
+    }
+
+    public void cancel() {
+        this.orderState.cancel(this);
+    }
+
+    public String getOrderState() {
+        return this.orderState.getStatus();
     }
 
     public void addOrderItem(OrderItem orderItem) {

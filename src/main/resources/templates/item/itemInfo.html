@@ -18,7 +18,6 @@
 
 
 <script th:inline="javascript">
-  <!-- 처음 웹페이지 로딩시 호출 -->
   $(document).ready(function(){
 
     $("#description").val().replace()
@@ -116,10 +115,11 @@
   <div class="container px-4 px-lg-5">
     <a class="navbar-brand" th:href="@{/}">Home</a>
       <form class="d-flex">
-        <button class="btn btn-light btn-outline-secondary" type="submit">
-          <i class="bi-cart-fill me-1"></i>
+        <a th:href="@{/cart}" class="btn btn-light btn-outline-secondary" role="button">
+        <i class="bi-cart-fill me-1"></i>
           Cart
           <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+        </a>
         </button>
       </form>
     </div>

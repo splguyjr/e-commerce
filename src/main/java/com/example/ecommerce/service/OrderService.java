@@ -85,7 +85,6 @@ public class OrderService {
 
             List<Long> wrappingMaterialList = orderForm.wrappingMaterialList();
 
-            System.out.println(wrappingMaterialList);
             //첫번째 포장 옵션이 없음인 경우 포장 없이 주문된 아이템
             if(wrappingMaterialList.isEmpty()) {
                 OrderItem orderItem = OrderItem.builder()
@@ -152,10 +151,10 @@ public List<MyPageForm> getMyPageInfo(Long memberId) {
             Item item = orderItem.getItem();
             String itemName = item.getName(); // 아이템 이름
             String imageUrl = item.getImageUrl(); // 아이템 이미지
+            int itemPrice = item.getPrice();//아이템 가격
             int itemCount = orderItem.getCount(); // 아이템 주문 수량
             int itemsPrice = orderItem.getItemsPrice(); // 아이템별 총 가격
-            totalPrice += itemsPrice; // 주문 총 가격
-
+            totalPrice += discountStrategy.applyDiscount(itemPrice, itemCount); // 주문 총 가격
             MyPageForm.OrderInfo orderInfo = MyPageForm.OrderInfo.builder()
                     .itemName(itemName)
                     .imageUrl(imageUrl)
@@ -192,6 +191,20 @@ public List<MyPageForm> getMyPageInfo(Long memberId) {
 
     return myPageFormList;
 }
+
+    public void proceedOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found by orderId"));
+        order.proceed();
+        orderRepository.save(order);
+    }
+
+    public void cancelOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found by orderId"));
+        order.cancel();
+        orderRepository.save(order);
+    }
 
 
 }
