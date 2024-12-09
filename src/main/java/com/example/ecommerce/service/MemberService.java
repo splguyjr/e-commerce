@@ -10,10 +10,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private static MemberService singleton;
+
+    private MemberService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
+
+    public static synchronized MemberService getInstance(MemberRepository memberRepository) {
+        if (singleton == null) {
+            singleton = new MemberService(memberRepository);
+        }
+        return singleton;
+    }
 
     //회원가입
     public Long join(Member member) {

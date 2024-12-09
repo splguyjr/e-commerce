@@ -5,7 +5,11 @@ import com.example.ecommerce.dto.MyPageForm;
 import com.example.ecommerce.entity.*;
 import com.example.ecommerce.exception.NotEnoughStockException;
 import com.example.ecommerce.repository.*;
+import com.example.ecommerce.service.discount.*;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +21,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -26,13 +29,33 @@ public class OrderService {
     private final CartItemRepository cartItemRepository;
     private final WrappingItemRepository wrappingItemRepository;
     private final WrappingMaterialInfoRepository wrappingMaterialInfoRepository;
-    
+    private DiscountStrategy discountStrategy;
+
+    public OrderService(OrderRepository orderRepository, ItemRepository itemRepository, MemberRepository memberRepository,
+                        CartItemRepository cartItemRepository, WrappingItemRepository wrappingItemRepository,
+                        WrappingMaterialInfoRepository wrappingMaterialInfoRepository) {
+        this.orderRepository = orderRepository;
+        this.itemRepository = itemRepository;
+        this.memberRepository = memberRepository;
+        this.cartItemRepository = cartItemRepository;
+        this.wrappingItemRepository = wrappingItemRepository;
+        this.wrappingMaterialInfoRepository = wrappingMaterialInfoRepository;
+
+    }
+
+    @PostConstruct
+    public void setDiscountStrategy() {
+        DiscountStrategyFactory factory = new PercentageDiscountStrategyFactory();
+        this.discountStrategy = factory.get();
+    }
+
     //단일 아이템만 바로 주문
     public Long order(Long memberId, Long itemId, int count) {
         //해당 itemId를 통해 item 조회
         Item findItem = itemRepository.findById(itemId).orElse(null);
         Member findMember = memberRepository.findById(memberId).orElse(null);
-        int orderPrice = findItem.getPrice() * count;
+//        int orderPrice = findItem.getPrice() * count;
+        int orderPrice = discountStrategy.applyDiscount(findItem.getPrice(), count);
 
         List<OrderItem> orderItemList = new ArrayList<>();
 
