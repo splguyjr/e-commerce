@@ -7,16 +7,12 @@ import com.example.ecommerce.exception.NotEnoughStockException;
 import com.example.ecommerce.repository.*;
 import com.example.ecommerce.service.discount.*;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -30,17 +26,18 @@ public class OrderService {
     private final WrappingItemRepository wrappingItemRepository;
     private final WrappingMaterialInfoRepository wrappingMaterialInfoRepository;
     private DiscountStrategy discountStrategy;
+    private final DiscountService discountService;
 
     public OrderService(OrderRepository orderRepository, ItemRepository itemRepository, MemberRepository memberRepository,
                         CartItemRepository cartItemRepository, WrappingItemRepository wrappingItemRepository,
-                        WrappingMaterialInfoRepository wrappingMaterialInfoRepository) {
+                        WrappingMaterialInfoRepository wrappingMaterialInfoRepository, DiscountService discountService) {
         this.orderRepository = orderRepository;
         this.itemRepository = itemRepository;
         this.memberRepository = memberRepository;
         this.cartItemRepository = cartItemRepository;
         this.wrappingItemRepository = wrappingItemRepository;
         this.wrappingMaterialInfoRepository = wrappingMaterialInfoRepository;
-
+        this.discountService = discountService;
     }
 
     @PostConstruct
@@ -54,8 +51,7 @@ public class OrderService {
         //해당 itemId를 통해 item 조회
         Item findItem = itemRepository.findById(itemId).orElse(null);
         Member findMember = memberRepository.findById(memberId).orElse(null);
-//        int orderPrice = findItem.getPrice() * count;
-        int orderPrice = discountStrategy.applyDiscount(findItem.getPrice(), count);
+        int orderPrice = findItem.getPrice() * count;
 
         List<OrderItem> orderItemList = new ArrayList<>();
 
@@ -154,7 +150,11 @@ public List<MyPageForm> getMyPageInfo(Long memberId) {
             int itemPrice = item.getPrice();//아이템 가격
             int itemCount = orderItem.getCount(); // 아이템 주문 수량
             int itemsPrice = orderItem.getItemsPrice(); // 아이템별 총 가격
-            totalPrice += discountStrategy.applyDiscount(itemPrice, itemCount); // 주문 총 가격
+
+            totalPrice += discountStrategy.applyDiscount(itemPrice, itemCount); //strategy 패턴을 적용한 단일 할인 전략 적용
+
+//            totalPrice += discountService.calculateFinalPrice(itemPrice, itemCount, order); //chain or responsibility 패턴을 적용하여 다중 할인 전략 순차 적용
+
             MyPageForm.OrderInfo orderInfo = MyPageForm.OrderInfo.builder()
                     .itemName(itemName)
                     .imageUrl(imageUrl)
